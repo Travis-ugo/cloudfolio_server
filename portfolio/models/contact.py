@@ -1,10 +1,13 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Contact(models.Model):
-    name = models.CharField(max_length=100)
     email = models.EmailField()
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    phone_number = PhoneNumberField(blank=True, region='NG') 
+    linkedin = models.URLField(blank=True)
+    github = models.URLField(blank=True)
+    twitter = models.URLField(blank=True)
+    calendly_link = models.URLField(blank=True)
 
     def __str__(self):
-        return f"Message from {self.name}"
+        return f"Public Contact Info"

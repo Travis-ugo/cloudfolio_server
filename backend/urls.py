@@ -17,11 +17,25 @@ Including another URLconf
 from django.contrib import admin
 from portfolio.views import home 
 from django.urls import path, include
-from rest_framework.authtoken import views
+from rest_framework.authtoken import views as drf_auth_views
+from drf_spectacular.views import (
+    SpectacularAPIView, 
+    SpectacularSwaggerView, 
+    SpectacularRedocView
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', home, name='home'), 
-    path('api-token-auth/', views.obtain_auth_token),
-    path('api/', include('portfolio.urls')),
+    path('admin/', admin.site.urls),
+    path('api/v1/api-token-auth/', drf_auth_views.obtain_auth_token),
+    path('api/v1/', include(('portfolio.urls', 'portfolio'), namespace='portfolio')),
+
+    # 🌐 OpenAPI raw schema (for Postman or tooling)
+    path('openapi/', SpectacularAPIView.as_view(), name='schema'),
+
+    # 💠 Swagger UI (interactive API docs)
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # 📘 Redoc UI (cleaner docs)
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]

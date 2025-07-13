@@ -17,6 +17,11 @@ class ServiceSerializer(serializers.ModelSerializer):
         model = Service
         fields = '__all__'
 
+    def create(self, validated_data):
+        if not validated_data.get('slug') and validated_data.get('title'):
+            validated_data['slug'] = slugify(validated_data['title'])
+        return super().create(validated_data)
+
 class AboutMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutMe

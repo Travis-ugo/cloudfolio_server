@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'portfolio'
+
 urlpatterns = [
     # Home endpoint (optional)
     path('', views.home),
@@ -13,9 +15,9 @@ urlpatterns = [
     path('services/', views.ServiceListCreate.as_view(), name='service-list'),
     path('services/<int:pk>/', views.ServiceRetrieveUpdateDestroy.as_view(), name='service-detail'),
 
-    # About Me endpoint (typically just one record)
-    path('about/<int:pk>/', views.AboutMeRetrieveUpdate.as_view(), name='about'),
+    # About Me endpoint
+    path('about/', views.AboutMeView.as_view(), name='about'),
 
-    # Contact endpoint (POST-only)
-    path('contact/', views.ContactCreate.as_view(), name='contact'),
+    # Contact endpoint
+    path('contact/', views.ContactView.as_view(), name='contact'),
 ]
