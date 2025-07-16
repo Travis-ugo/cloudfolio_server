@@ -15,27 +15,41 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from portfolio.views import home 
 from django.urls import path, include
+from portfolio.views import home
 from rest_framework.authtoken import views as drf_auth_views
 from drf_spectacular.views import (
-    SpectacularAPIView, 
-    SpectacularSwaggerView, 
+    SpectacularAPIView,
+    SpectacularSwaggerView,
     SpectacularRedocView
 )
+from django.conf import settings
+from django.conf.urls.static import static
+from portfolio.views.auth import CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    path('', home, name='home'), 
+    # 🏠 Home
+    path('', home, name='home'),
+
+    # 🔐 Admin and Auth
     path('admin/', admin.site.urls),
-    path('api/v1/api-token-auth/', drf_auth_views.obtain_auth_token),
+
+    path('api/v1/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # 📦 Portfolio app
     path('api/v1/', include(('portfolio.urls', 'portfolio'), namespace='portfolio')),
 
-    # 🌐 OpenAPI raw schema (for Postman or tooling)
+    # 📄 OpenAPI schema
     path('openapi/', SpectacularAPIView.as_view(), name='schema'),
 
-    # 💠 Swagger UI (interactive API docs)
+    # 💠 Swagger UI
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    # 📘 Redoc UI (cleaner docs)
+    # 📘 Redoc UI
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+
+# 🧾 Serve static files during development (needed for Swagger UI)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
