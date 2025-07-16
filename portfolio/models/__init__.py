@@ -3,3 +3,4 @@ from .projects import Project
 from .service import Service
 from .contact import Contact
 from .about import AboutMe
+from .custom_user import CustomUser
